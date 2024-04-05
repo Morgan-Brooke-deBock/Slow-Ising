@@ -1,16 +1,16 @@
 #include "IsingModel.h"
 
-IsingModel MetropolisHasting::run(int MCSteps, IsingModel model) {
+void MetropolisHasting::run(int MCSteps, IsingModel &model) {
     for (int i = 0; i<MCSteps; i++){
 
         for (int j = 0; j <model.get_system_size(); j++){
             // claculate the energy
-            model = step(model);
+            step(model);
         }
     }
-    return model;
+
 }
-IsingModel MetropolisHasting::step(IsingModel model) {
+void MetropolisHasting::step(IsingModel &model) {
         double deltaE;
         IsingSpin *testSpin;
 
@@ -21,8 +21,6 @@ IsingModel MetropolisHasting::step(IsingModel model) {
         if (accept(deltaE)) {
             testSpin->flip();
         }
-
-    return model;
 }
 bool MetropolisHasting::accept(double deltaE) { 
 
@@ -109,7 +107,7 @@ void IsingExperiment::movie(int L) {
     for (double T = 5; T>=0; T-=0.1){
         MCAlgorithm.set_T(T);
         for (int i = 0; i<100;i++){
-            model = MCAlgorithm.run(1,model);
+            MCAlgorithm.run(1,model);
         }
         obs.takeMeasurement(model.get_spins(),&MCAlgorithm,T);
         std::cout<<(5-T)*20<<'%'<<std::endl;
